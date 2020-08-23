@@ -23,5 +23,5 @@ void loop() {
 
 
 void serialEvent() {
-    serial.backup_buffer();
+    serial.backup_buffer(); // this function copies the buffer till '/r' (not '/n');
 }

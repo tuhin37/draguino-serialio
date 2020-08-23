@@ -44,7 +44,7 @@ uint8_t serialio::backup_complete() {
 uint32_t serialio::parseInt() {
     if(backup_done) {
         uint8_t i=serial_input_buffer_index-1;
-        uint16_t multiplier=1;
+        uint32_t multiplier=1;
         uint32_t tmp=0;
         while(i>=0 && i<=4 && serial_input_buffer[i]>=48 && serial_input_buffer[i]<=57) {
          

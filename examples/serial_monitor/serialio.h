@@ -6,10 +6,8 @@ class serialio{
     void backup_buffer();
     void show_buffer();
     uint8_t backup_complete();
-    uint8_t parse_unit8_t(void);
     uint32_t parseInt(void);
-    // void parse_uint32_t(void);
-    // void parse_float(void);
+    void parse_float(void);
 
 
     // void parse_string(&str);
