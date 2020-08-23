@@ -47,7 +47,6 @@ uint32_t serialio::parseInt() {
         uint32_t multiplier=1;
         uint32_t tmp=0;
         while(i>=0 && i<=4 && serial_input_buffer[i]>=48 && serial_input_buffer[i]<=57) {
-         
             tmp+=(serial_input_buffer[i]-48)*multiplier;
             i--;
             multiplier*=10;
@@ -57,6 +56,25 @@ uint32_t serialio::parseInt() {
         serial_input_buffer_index=0;
         return tmp;
     }
+}
+
+void serialio::parseString(char* str) {
+    char ch;
+    uint8_t i=0;
+    // clear the string array
+    for(i=0; i<10; i++){
+        *(str+i)=0;
+    }
+
+    //while(i>=0) {
+    for(i=0; i<serial_input_buffer_index; i++) {
+        ch=(char)serial_input_buffer[i];
+        strncat(str, &ch, 1); 
+        // Serial.println(i);
+    }
+        
+    backup_done=0;
+    serial_input_buffer_index=0;
 }
 
 

@@ -1,7 +1,7 @@
 
 #include "serialio.h"
 uint32_t output;
-
+char str[10];
 serialio serial;
 
 void setup() {
@@ -15,8 +15,10 @@ void loop() {
 
     if(serial.backup_complete()) {
         serial.show_buffer();
-        output=serial.parseInt();
-        Serial.println(output);
+        // output=serial.parseInt();
+        // Serial.println(output);
+        serial.parseString(str);
+        Serial.println(str);
     }
 
 }

@@ -8,7 +8,7 @@ class serialio{
     uint8_t backup_complete();
     uint32_t parseInt(void);
     void parse_float(void);
-
+    void parseString(char* str);
 
     // void parse_string(&str);
 
