@@ -17,14 +17,14 @@ void loop() {
         // serial.show_buffer();
         // output=serial.parseInt();
         // Serial.println(output);
-        //serial.parseString(str);
-        //Serial.println(str);
-        serial.parse_float();
+        serial.parseString(str,10); // very careful with this function, do not give a bigger number than actual 
+        Serial.println(str);
+        // Serial.println(serial.parseFloat());
     }
 
 }
 
 
 void serialEvent() {
-    serial.backup_buffer(); // this function copies the buffer till '/r' (not '/n');
+    serial.copyBuffer(); // this function copies the buffer till '/r' (not '/n');
 }

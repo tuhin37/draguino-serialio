@@ -3,18 +3,17 @@ class serialio{
 
     
     void begin(uint16_t baud);
-    void backup_buffer();
+    void copyBuffer();   // this makes a copy of the hardware input buffer
     void show_buffer();
     uint8_t backup_complete();
     uint32_t parseInt(void);
-    float parse_float(void);
-    void parseString(char* str);
+    float parseFloat(void);
+    void parseString(char*, uint8_t);
 
     // void parse_string(&str);
 
     private:
-    uint8_t serial_input_buffer[10];    // copy of the input serial buffer register
-    uint8_t received_byte;
+    uint8_t serial_input_buffer[32];    // copy of the input serial buffer register
     uint8_t serial_input_buffer_index;
     uint8_t backup_done;
     uint32_t char_array2int(uint8_t, uint8_t);

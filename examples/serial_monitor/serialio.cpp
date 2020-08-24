@@ -8,8 +8,8 @@ void serialio::begin(uint16_t baud) {
 }
 
 
-void serialio::backup_buffer() {
-    received_byte=Serial.read();
+void serialio::copyBuffer() {
+    uint8_t received_byte=Serial.read();
     if(received_byte!=10) {
         serial_input_buffer[serial_input_buffer_index]=received_byte;
         serial_input_buffer_index++;
@@ -40,7 +40,7 @@ uint8_t serialio::backup_complete() {
     return backup_done;
 }
 
-
+// internal function
 uint32_t serialio::char_array2int(uint8_t msd_index, uint8_t lsd_index) {
     uint32_t output=0;
     uint32_t multiplier=1;
@@ -62,28 +62,17 @@ uint32_t serialio::char_array2int(uint8_t msd_index, uint8_t lsd_index) {
 
 uint32_t serialio::parseInt() {
     if(backup_done) {
-        uint8_t i=serial_input_buffer_index-1;
-        uint32_t multiplier=1;
-        uint32_t tmp=0;
-        while(i>=0 && i<serial_input_buffer_index && serial_input_buffer[i]>=48 && serial_input_buffer[i]<=57) {
-            tmp+=(serial_input_buffer[i]-48)*multiplier;
-            i--;
-            multiplier*=10;
-        }
-        // reset the flags
-        backup_done=0;
-        serial_input_buffer_index=0;
-        return tmp;
+        return (serialio::char_array2int(0, serial_input_buffer_index-1));
     }
 }
 
 
 
-void serialio::parseString(char* str) {
+void serialio::parseString(char* str, uint8_t string_length) {
     char ch;
     uint8_t i=0;
     // clear the string array
-    for(i=0; i<10; i++){
+    for(i=0; i<string_length; i++){
         *(str+i)=0;
     }
     for(i=0; i<serial_input_buffer_index; i++) {
@@ -95,38 +84,33 @@ void serialio::parseString(char* str) {
 }
 
 
-float serialio::parse_float() {
-    uint8_t len=serial_input_buffer_index;
-    uint8_t i;
+float serialio::parseFloat() {
+    uint8_t i,j;
     float output;
-    uint32_t sub_one_value;
-    
     // find decimal's index point
-    for(i=0; i<len; i++) {
+    for(i=0; i<serial_input_buffer_index; i++) {
         if(serial_input_buffer[i]==46) {
             break;
         }
     }
     // at this point i points to  the decimal point location
     // if i=len then decimal point was not found
-    if(i>=len-1) {
+    if(i>=serial_input_buffer_index-1) {
         backup_done=0;
         serial_input_buffer_index=0;
         output=serialio::char_array2int(0, i-1);
     }
 
-
     else {// decimal found at 
-        output=serialio::char_array2int(0, i-1);
-        Serial.println("---");
-        // serialio::char_array2int(i+1, len-1))/1000;
-        
+        output=(serialio::char_array2int(i+1, serial_input_buffer_index-1)); // get the post decimal part
+        for(j=0; j<(serial_input_buffer_index-i-1); j++){
+            output/=10;
+        }
+        output+=serialio::char_array2int(0, i-1); // get the pre decimal part
     }
 
-    
     backup_done=0;
     serial_input_buffer_index=0;
-    Serial.println(output);
     return output;
 }
 
