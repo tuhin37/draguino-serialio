@@ -14,11 +14,12 @@ void loop() {
    
 
     if(serial.backup_complete()) {
-        serial.show_buffer();
+        // serial.show_buffer();
         // output=serial.parseInt();
         // Serial.println(output);
-        serial.parseString(str);
-        Serial.println(str);
+        //serial.parseString(str);
+        //Serial.println(str);
+        serial.parse_float();
     }
 
 }

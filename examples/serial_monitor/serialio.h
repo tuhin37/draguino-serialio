@@ -7,7 +7,7 @@ class serialio{
     void show_buffer();
     uint8_t backup_complete();
     uint32_t parseInt(void);
-    void parse_float(void);
+    float parse_float(void);
     void parseString(char* str);
 
     // void parse_string(&str);
@@ -17,6 +17,6 @@ class serialio{
     uint8_t received_byte;
     uint8_t serial_input_buffer_index;
     uint8_t backup_done;
-
+    uint32_t char_array2int(uint8_t, uint8_t);
 	
 };
