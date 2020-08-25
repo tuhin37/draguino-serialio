@@ -61,8 +61,12 @@ uint32_t serialio::char_array2int(uint8_t msd_index, uint8_t lsd_index) {
 
 
 uint32_t serialio::parseInt() {
+    uint32_t output;
     if(backup_done) {
-        return (serialio::char_array2int(0, serial_input_buffer_index-1));
+        output=serialio::char_array2int(0, serial_input_buffer_index-1);
+        backup_done=0;
+        serial_input_buffer_index=0;
+        return (output);
     }
 }
 
@@ -79,8 +83,7 @@ void serialio::parseString(char* str, uint8_t string_length) {
         ch=(char)serial_input_buffer[i];
         strncat(str, &ch, 1); 
     }
-    backup_done=0;
-    serial_input_buffer_index=0;
+    
 }
 
 

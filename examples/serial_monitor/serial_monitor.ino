@@ -15,10 +15,12 @@ void loop() {
 
     if(serial.backup_complete()) {
         // serial.show_buffer();
-        // output=serial.parseInt();
-        // Serial.println(output);
-        serial.parseString(str,10); // very careful with this function, do not give a bigger number than actual 
-        Serial.println(str);
+        Serial.println(serial.parseInt());
+        
+        
+        // serial.parseString(str,10); // very careful with this function, do not give a bigger number than actual 
+        // Serial.println(str);
+        
         // Serial.println(serial.parseFloat());
     }
 
