@@ -8,14 +8,22 @@ void serialio::begin(uint16_t baud) {
 }
 
 
-void serialio::copyBuffer() {
-    uint8_t received_byte=Serial.read();
-    if(received_byte!=10) {
-        serial_input_buffer[serial_input_buffer_index]=received_byte;
-        serial_input_buffer_index++;
+void serialio::copyBuffer(uint8_t mode) {
+    if(mode==LINE_END) {
+        uint8_t received_byte=Serial.read();
+        if(received_byte!=10) {
+            serial_input_buffer[serial_input_buffer_index]=received_byte;
+            serial_input_buffer_index++;
+        }
+        else {
+            serial_input_buffer_index--;
+            backup_done=1;
+        }
     }
-    else {
-        serial_input_buffer_index--;
+    else if(mode<=32 && Serial.available()==mode) {
+        for(serial_input_buffer_index=0; serial_input_buffer_index<mode; serial_input_buffer_index++) {
+            serial_input_buffer[serial_input_buffer_index]=Serial.read();
+        }
         backup_done=1;
     }
 }
@@ -32,6 +40,9 @@ void serialio::show_buffer() {
             Serial.print(" ");
         }
         Serial.println("]");
+        
+        backup_done=0;  // just for debuggig
+        serial_input_buffer_index=0; // just for debuggig
     }
 }
 

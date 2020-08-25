@@ -1,9 +1,12 @@
+#define LINE_END 255
+
+
 class serialio{
 	public: 
 
     
     void begin(uint16_t baud);
-    void copyBuffer();   // this makes a copy of the hardware input buffer
+    void copyBuffer(uint8_t);   // this makes a copy of the hardware input buffer
     void show_buffer();
     uint8_t backup_complete();
     uint32_t parseInt(void);

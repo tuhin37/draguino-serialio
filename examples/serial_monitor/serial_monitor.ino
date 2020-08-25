@@ -14,8 +14,8 @@ void loop() {
    
 
     if(serial.backup_complete()) {
-        // serial.show_buffer();
-        Serial.println(serial.parseInt());
+        serial.show_buffer();
+        // Serial.println(serial.parseInt());
         
         
         // serial.parseString(str,10); // very careful with this function, do not give a bigger number than actual 
@@ -28,5 +28,5 @@ void loop() {
 
 
 void serialEvent() {
-    serial.copyBuffer(); // this function copies the buffer till '/r' (not '/n');
+    serial.copyBuffer(5); // this function copies the buffer till '/r' (not '/n');
 }
