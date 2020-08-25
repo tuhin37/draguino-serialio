@@ -8,6 +8,8 @@ void setup() {
     // Serial.begin(9600);
     // delay(1000);
     serial.begin(9600);
+    delay(2000);
+    serial.send_uint8(131);
 }
 
 void loop() {
@@ -28,5 +30,5 @@ void loop() {
 
 
 void serialEvent() {
-    serial.copyBuffer(5); // this function copies the buffer till '/r' (not '/n');
+    // serial.copyBuffer(5); // this function copies the buffer till '/r' (not '/n');
 }

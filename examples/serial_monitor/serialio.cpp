@@ -4,7 +4,7 @@
 void serialio::begin(uint16_t baud) {	
 	Serial.begin(baud);
     delay(100);
-    Serial.println("Constructor worked");
+    // Serial.println("Constructor worked");
 }
 
 
@@ -127,6 +127,34 @@ float serialio::parseFloat() {
     serial_input_buffer_index=0;
     return output;
 }
+
+void serialio::send_float(float inData) { 
+    uint8_t bytes[sizeof(float)];
+    *(float*)(bytes) = inData;  // convert float to bytes
+    Serial.write(bytes[0]);
+    Serial.write(bytes[1]);
+    Serial.write(bytes[2]);
+    Serial.write(bytes[3]);
+    Serial.flush(); // wait for the transmission to complete
+}
+
+void serialio::send_uint32(uint32_t inData) {
+    Serial.write((inData>>24) & 0xFF); // send most significat byte
+    Serial.write((inData>>16) & 0xFF); // send second most significat byte
+    Serial.write((inData>>8) & 0xFF); // send third most significat byte
+    Serial.write((inData) & 0xFF); // send third least significat byte
+    Serial.flush(); // wait for the transmission to complete
+}
+
+void serialio::send_uint16(uint16_t inData) {
+    Serial.write((inData>>8) & 0xFF);
+    Serial.write(inData & 0xFF);
+}
+
+void serialio::send_uint8(uint8_t inData) {
+    Serial.write(inData);
+}
+
 
 
 

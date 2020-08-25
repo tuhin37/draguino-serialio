@@ -9,6 +9,12 @@ class serialio{
     void copyBuffer(uint8_t);   // this makes a copy of the hardware input buffer
     void show_buffer();
     uint8_t backup_complete();
+    
+    void send_float(float);
+    void send_uint32(uint32_t);
+    void send_uint16(uint16_t);
+    void send_uint8(uint8_t);
+
     uint32_t parseInt(void);
     float parseFloat(void);
     void parseString(char*, uint8_t);
