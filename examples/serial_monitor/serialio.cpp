@@ -25,6 +25,7 @@ void serialio::copyBuffer(uint8_t mode) {
             serial_input_buffer[serial_input_buffer_index]=Serial.read();
         }
         backup_done=1;
+        index=0; 
     }
 }
 
@@ -40,9 +41,6 @@ void serialio::show_buffer() {
             Serial.print(" ");
         }
         Serial.println("]");
-        
-        backup_done=0;  // just for debuggig
-        serial_input_buffer_index=0; // just for debuggig
     }
 }
 
@@ -70,7 +68,6 @@ uint32_t serialio::char_array2int(uint8_t msd_index, uint8_t lsd_index) {
 }
 
 
-
 uint32_t serialio::parseInt() {
     uint32_t output;
     if(backup_done) {
@@ -80,7 +77,6 @@ uint32_t serialio::parseInt() {
         return (output);
     }
 }
-
 
 
 void serialio::parseString(char* str, uint8_t string_length) {
@@ -128,6 +124,7 @@ float serialio::parseFloat() {
     return output;
 }
 
+
 void serialio::send_float(float inData) { 
     uint8_t bytes[sizeof(float)];
     *(float*)(bytes) = inData;  // convert float to bytes
@@ -138,6 +135,7 @@ void serialio::send_float(float inData) {
     Serial.flush(); // wait for the transmission to complete
 }
 
+
 void serialio::send_uint32(uint32_t inData) {
     Serial.write((inData>>24) & 0xFF); // send most significat byte
     Serial.write((inData>>16) & 0xFF); // send second most significat byte
@@ -146,10 +144,12 @@ void serialio::send_uint32(uint32_t inData) {
     Serial.flush(); // wait for the transmission to complete
 }
 
+
 void serialio::send_uint16(uint16_t inData) {
     Serial.write((inData>>8) & 0xFF);
     Serial.write(inData & 0xFF);
 }
+
 
 void serialio::send_uint8(uint8_t inData) {
     Serial.write(inData);
@@ -157,6 +157,90 @@ void serialio::send_uint8(uint8_t inData) {
 
 
 
+float serialio::get_float() {
+    if(serial_input_buffer_index-index>=4) {
+        uint8_t bytes[sizeof(float)];
+        float outData;
+        bytes[0] = serial_input_buffer[index];
+        bytes[1] = serial_input_buffer[index+1];
+        bytes[2] = serial_input_buffer[index+2];
+        bytes[3] = serial_input_buffer[index+3];
+        outData = *(float*)(bytes);
+        index+=4; // advace index for next bytes extracton
+        if(index==serial_input_buffer_index) { // index point just out side of the input buffer copy
+            backup_done=0;
+            serial_input_buffer_index=0;    
+        }
+        return outData;
+    }
+    else {
+        backup_done=0;
+        serial_input_buffer_index=0;
+        return 0;
+    }
+}
+
+
+uint32_t serialio::get_uint32() {
+    if(serial_input_buffer_index-index>=4) {
+        uint32_t outData;
+        outData = ((uint32_t)serial_input_buffer[index]) << 24;
+        outData |= ((uint32_t)serial_input_buffer[index+1]) << 16;
+        outData |= ((uint32_t)serial_input_buffer[index+2]) << 8;
+        outData |= serial_input_buffer[index+3];
+        index+=4;
+
+        if(index==serial_input_buffer_index) { // no more bytes left 
+            backup_done=0;
+            serial_input_buffer_index=0;    
+        }
+        return outData;
+    }
+    else {
+        backup_done=0;
+        serial_input_buffer_index=0;
+        return 0;
+    }
+}
+
+
+uint16_t serialio::get_uint16() {
+    if(serial_input_buffer_index-index>=2) { 
+        uint16_t outData;
+        outData |= (serial_input_buffer[index]) << 8;
+        outData |= (serial_input_buffer[index+1]);
+        index+=2;
+        if(index==serial_input_buffer_index) { // no more bytes left 
+            backup_done=0;
+            serial_input_buffer_index=0;    
+        }
+        return outData;
+    }
+    else {
+        backup_done=0;
+        serial_input_buffer_index=0;
+        return 0;
+    }
+}
+
+
+uint8_t serialio::get_uint8() {
+    uint8_t outData;
+    if(serial_input_buffer_index-index>=1) { 
+        outData=serial_input_buffer[index];
+        index++;
+        if(index==serial_input_buffer_index) { // no more bytes left 
+            backup_done=0;
+            serial_input_buffer_index=0;    
+        }
+        return outData;
+    }
+    else {
+        backup_done=0;
+        serial_input_buffer_index=0;
+        return 0;
+    }
+}
 
 
 
